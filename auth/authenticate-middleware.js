@@ -17,7 +17,7 @@ const authenticate = (req, res, next) => {
   } else {
     res.status(400).json({ message: 'You shall not pass.'})
   };
-};
+}; 
 
 module.exports = {
   authenticate
