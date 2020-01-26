@@ -1,10 +1,10 @@
 const bcrypt = require('bcryptjs');
 const db = require('../database/dbConfig');
-const secret = require('../auth/authenticate').jwtToken;
+const secret = require('../auth/authenticate-middleware.js').jwtToken;
 const jwt = require('jsonwebtoken');
 
 
-const { authenticate } = require('../auth/authenticate-middleware.js');
+const authenticate = require('../auth/authenticate-middleware.js');
 
 module.exports = server => {
   server.post('/api/register', register);
