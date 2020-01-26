@@ -1,5 +1,5 @@
-const request = require('supertest')
-const server = require('../api/server')
+const request = require('supertest');
+const server = require('../api/server');
 
 describe("jokes-router.js", () => {
   describe("POST /jokes", () => {
@@ -11,4 +11,4 @@ describe("jokes-router.js", () => {
       })
     })
   })
-})
+});
