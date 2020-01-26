@@ -1,59 +1,38 @@
+const express = require('express');
 const bcrypt = require('bcryptjs');
-const db = require('../database/dbConfig');
-const secret = require('../auth/authenticate-middleware.js').jwtToken;
-const jwt = require('jsonwebtoken');
+const { createToken } = require('./createToken.js');
+//const Users = require('../users/user-model');
+const router = express.Router();
 
 
-const authenticate = require('../auth/authenticate-middleware.js');
+router.post('/register', async (req, res, next) => {
+  try {
+    const user = await Users.add(req.body)
 
-module.exports = server => {
-  server.post('/api/register', register);
-  server.post('/api/login', login);
-  server.get('/api/jokes', authenticate, getJokes);
-};
-
-function generateToken(user) {
-  const payload = {
-    subject: user
+    res.status(201).json({ message: 'Successfully registered.', user})
+  } catch (error) {
+    next(error)
   }
+});
 
-  const options = {
-    expiresIn: '7d'
+
+router.post('/login', async (req, res, next) => {
+  try {
+    const { username, password } = req.body
+    const user = await Users.findBy({ username }).first()
+    const passwordValid = await bcrypt.compare(password, user.password)
+
+    if (user && passwordValid) {
+      const token = createToken(user);
+      res.status(200).json({ 
+        message: `Welcome, ${user.username}!`, token})
+    } else {
+      res.status(401).json({ message: 'Error, 2 more tries.'})
+    }
+  } catch (error) {
+    next(error)
   }
+});
 
-  return jwt.sign(payload, secret, options)
-};
-
-function register(req, res) {
-  const user = req.body
-  const token = generateToken(user.username);
-  if (user.username && user.password) {
-    user.password = bcrypt.hashSync(user.password, 12);
-    db('users').insert(user)
-    .then(response => {
-      res.status(200).json({user: user.username, token})
-    })
-  } else {
-    res.status(400).json({message: 'username and password not provided.'})
-  }
-}
-
-function login(req, res) {
-  const { username, password } = req.body
-  if (username && password) {
-    db('users').where({username}).first()
-    .then(response => {
-      const user = response
-      if (user) {
-        const token = generateToken(response.username)
-        res.status(200).json({token: token})
-      } 
-    })
-    .catch(err => req.status(500).json({message:'error logging in!'}))
-  } else {
-    res.status(400).json({message: 'invalid credentials!'})
-  }
-}
-
-
+module.exports = router;
 

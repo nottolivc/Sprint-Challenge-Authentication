@@ -1,32 +1,27 @@
 const jwt = require('jsonwebtoken');
 
 
-const jwtToken = process.env.JWT_SECRET || 'super secret thing here';
+const authenticate = (req, res, next) => {
+  const { authorization } = req.headers
 
-
-// auth middleware function
-function authenticate(req, res, next) {
-  const token = req.get('Authorization');
-
-  if (token) {
-    jwt.verify(token, jwtToken, (error, decoded) => {
-      if (err) return res.status(401).json(err);
-
-      req.decoded = decoded;
-
-      next();
+  if (authorization) {
+    const secret = process.env.JWT_SECRET || 'Something super secret here'
+    jwt.verify(authorization, secret, function(error, decodeToken) {
+      if (error) {
+        res.status(401).json({ message: 'Invalid token'})
+      } else {
+        req.token = decodeToken;
+        next()
+      }
     })
   } else {
-    return res.status(401).json({
-      error: 'you shall not pass!',
-    })
-  }
-}
+    res.status(400).json({ message: 'You shall not pass.'})
+  };
+};
 
 module.exports = {
-  authenticate,
-  jwtToken
-};
+  authenticate
+}
 /* 
   complete the middleware code to check if the user is logged in
   before granting access to the next middleware/route handler
@@ -35,4 +30,3 @@ module.exports = {
 // module.exports = (req, res, next) => {
 //   res.status(401).json({ you: 'shall not pass!' });
 // };
-
