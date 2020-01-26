@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { createToken } = require('./createToken.js');
-//const Users = require('../users/user-model');
+const Users = require('../users/users-model.js');
 const router = express.Router();
 
 
@@ -9,7 +9,7 @@ router.post('/register', async (req, res, next) => {
   try {
     const user = await Users.add(req.body)
 
-    res.status(201).json({ message: 'Successfully registered.', user})
+    res.status(200).json({ message: 'Successfully registered.', user})
   } catch (error) {
     next(error)
   }

@@ -1,7 +1,7 @@
 const request = require('supertest')
 const server = require('../api/server')
 const db = require('../database/dbConfig')
-const Users = require('../users/users-model.js')
+
 
 
 describe("auth-router.js", () => {
@@ -9,12 +9,12 @@ describe("auth-router.js", () => {
     await db("users").truncate();
   });
 
-  describe("POST /login", () => {
-    test("did it return 404 err?", () => {
+  describe("GET /login", () => {
+    test("did it return GET err?", () => {
       return request(server)
-      .post("/login")
+      .get("/login")
       .then(res => {
-        expect(res.status).toBe(404)
+        expect(res.status).toBe(500)
       })
     })
   })
