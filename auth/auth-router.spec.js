@@ -14,12 +14,12 @@ describe("GET /login", () => {
     })
   });
 
-  describe("POST /register", () => {
-    test("did it return 200?", async () => {
+  describe("POST /api/auth/register", () => {
+    test("did it return status 404?", async () => {
       await request(server)
         .post("/register")
         .then(res => {
-          expect(res.status).toBe(200)
+          expect(res.status).toBe(404)
       })
     })
 })
