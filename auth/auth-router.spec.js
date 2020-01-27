@@ -15,11 +15,11 @@ describe("GET /login", () => {
   });
 
   describe("POST /register", () => {
-    test("did it return 404 err?", async () => {
+    test("did it return 200?", async () => {
       await request(server)
         .post("/register")
         .then(res => {
-          expect(res.status).toBe(404)
+          expect(res.status).toBe(200)
       })
     })
 })
