@@ -5,7 +5,7 @@ function createToken(user) {
     username: user.username
   };
 
-  const secret = process.env.JWT_SECRET || 'Something super secret';
+  const secret = process.env.JWT_SECRET || 'Something super secret here';
 
   const options = {
     expiresIn: '7d',
